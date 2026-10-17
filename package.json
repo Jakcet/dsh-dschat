@@ -1,6 +1,6 @@
 {
   "name": "dsh-dschat",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Embed the DeepSeek web chat in a DSH Desktop main panel through an Electron webview guest, with a toolbar and a local login snapshot restored on the next start.",
   "license": "MIT",
