@@ -105,12 +105,15 @@ window.__ModuleLoader__.load({
 
     async function writeSessionBackup(storage) {
       try {
-        await fetch('/api/dschat/session', {
+        const response = await fetch('/api/dschat/session', {
           method: 'POST',
+          headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ storage }),
-          keepalive: true,
         })
-      } catch {}
+        return { ok: response.ok, status: response.status }
+      } catch (error) {
+        return { ok: false, status: 0, error: String(error) }
+      }
     }
 
     function safeCall(run, fallback) {
@@ -243,9 +246,27 @@ window.__ModuleLoader__.load({
               report('persist:skip', { onSignIn, keys: Object.keys(parsed).length })
               return
             }
-            lastSnapshot = raw
-            await writeSessionBackup(parsed)
-            report('persist:saved', { keys: Object.keys(parsed).length })
+            // 只保留登录相关的键：整份 localStorage 可能有几百 KB 缓存，既没必要
+            // 也没法保证写盘成功（体积越界会被服务端拒绝）。
+            const relevant = {}
+            for (const key of Object.keys(parsed)) {
+              if (!/(token|user|auth|session|login)/i.test(key)) continue
+              const value = parsed[key]
+              if (typeof value !== 'string' || value.length > 64 * 1024) continue
+              relevant[key] = value
+            }
+            if (Object.keys(relevant).length === 0) {
+              report('persist:skip', { onSignIn, reason: 'no-auth-keys', keys: Object.keys(parsed).length })
+              return
+            }
+            const snapshot = JSON.stringify(relevant)
+            if (snapshot === lastSnapshot) return
+            lastSnapshot = snapshot
+            const result = await writeSessionBackup(relevant)
+            report(result.ok ? 'persist:saved' : 'persist-failed', {
+              keys: Object.keys(relevant).length,
+              status: result.status,
+            })
           } catch (error) {
             report('persist-failed', errorText(error))
           } finally {
@@ -424,7 +445,6 @@ window.__ModuleLoader__.load({
     function apply(ctx) {
       const namespace = NS
       const t = ctx.locale.bind(namespace)
-      report('apply:mounted', { version: 2 })
       ctx.effect(() => ctx.locale.register(namespace, { zh, en }), 'dsh-dschat: locale')
       ctx.effect(() => ensureStyle(), 'dsh-dschat: styles')
       ctx.effect(() => ctx.slots.inject('main', () => ctx.slots.inject('sidebar.panellist', () => {
