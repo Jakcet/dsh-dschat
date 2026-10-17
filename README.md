@@ -28,11 +28,12 @@ lease check, sandbox flags and navigation policy as the built-in sidebar browser
 
 ## Install
 
-```sh
-dsh plugin add dsh-dschat
-```
+Install it from the DSH plugin market (search for `dsh-dschat`), or add this package as a
+bundle to your DSH profile:
 
-or install it from the plugin market.
+```sh
+npm install dsh-dschat
+```
 
 ## Known limits (enforced by the DSH host, not by this plugin)
 
@@ -86,11 +87,11 @@ MIT
 
 ## 安装
 
-```sh
-dsh plugin add dsh-dschat
-```
+在 DSH 插件市场搜索 `dsh-dschat` 安装，或把它作为 bundle 装进你的 DSH profile：
 
-或在插件市场里安装。
+```sh
+npm install dsh-dschat
+```
 
 ## 已知限制（来自 DSH 宿主策略，插件无法绕过）
 
