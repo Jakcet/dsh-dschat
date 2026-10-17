@@ -1,0 +1,4 @@
+- insert:
+    - id: dsh-dschat
+      name: dsh-dschat
+      config: {}

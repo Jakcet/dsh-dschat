@@ -1,0 +1,54 @@
+{
+  "name": "dsh-dschat",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Embed the DeepSeek web chat in a DSH Desktop main panel through an Electron webview guest, with a toolbar and a local login snapshot restored on the next start.",
+  "license": "MIT",
+  "author": "Jakcet",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek",
+    "webview",
+    "chat"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jakcet/dsh-dschat.git"
+  },
+  "homepage": "https://github.com/Jakcet/dsh-dschat#readme",
+  "bugs": {
+    "url": "https://github.com/Jakcet/dsh-dschat/issues"
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.2"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-layout"
+      ]
+    }
+  }
+}
